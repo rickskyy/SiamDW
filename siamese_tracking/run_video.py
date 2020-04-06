@@ -170,4 +170,4 @@ if __name__ == '__main__':
     main()
 
 
-# python siamese_tracking/run_video.py --arch SiamFCRes22 --resume snapshots/CIResNet22.pth --video /home/elena/yarun/SiamDW/lib/dataset/video.mp4
+# python siamese_tracking/run_video.py --arch SiamFCRes22 --resume snapshots/CIResNet22.pth --video .../dataset/video.mp4
