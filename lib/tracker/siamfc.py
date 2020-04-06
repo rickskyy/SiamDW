@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 
 from torch.autograd import Variable
-from utils.utils import load_yaml, im_to_torch, get_subwindow_tracking, make_scale_pyramid
+from lib.utils.utils import load_yaml, im_to_torch, get_subwindow_tracking, make_scale_pyramid
 
 
 class SiamFC(object):
@@ -58,7 +58,7 @@ class SiamFC(object):
 
         z = Variable(z_crop.unsqueeze(0))
 
-        net.template(z.cuda())
+        net.template(z.cpu())
 
         if p.windowing == 'cosine':
             window = np.outer(np.hanning(int(p.score_size) * int(p.response_up)),
@@ -118,7 +118,7 @@ class SiamFC(object):
 
         x_crops = Variable(make_scale_pyramid(im, target_pos, scaled_instance, p.instance_size, avg_chans))
 
-        target_pos, new_scale = self.update(net, p.s_x, x_crops.cuda(), target_pos, window, p)
+        target_pos, new_scale = self.update(net, p.s_x, x_crops.cpu(), target_pos, window, p)
 
         # scale damping and saturation
         p.s_x = max(p.min_s_x, min(p.max_s_x, (1 - p.scale_lr) * p.s_x + p.scale_lr * scaled_instance[new_scale]))

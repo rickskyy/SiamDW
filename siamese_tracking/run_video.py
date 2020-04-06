@@ -6,21 +6,31 @@
 # Detail: test siamese on a specific video (provide init bbox and video file)
 # ------------------------------------------------------------------------------
 
-import _init_paths
+# import _init_paths
 import os
+import os.path as osp
+import sys
+
 import cv2
 import random
 import argparse
 import numpy as np
 
-import models.models as models
+CURRENT_DIR = osp.dirname(__file__)
+sys.path.append(osp.join(CURRENT_DIR, '..'))
+
+# import lib.models.models
+
+# from lib.models.models import SiamFCIncep22
+
+import lib.models.models as models
 
 from os.path import exists, join
 from torch.autograd import Variable
-from tracker.siamfc import SiamFC
-from tracker.siamrpn import SiamRPN
+from lib.tracker.siamfc import SiamFC
+from lib.tracker.siamrpn import SiamRPN
 from easydict import EasyDict as edict
-from utils.utils import load_pretrain, cxy_wh_2_rect, get_axis_aligned_bbox, load_dataset, poly_iou
+from lib.utils.utils import load_pretrain, cxy_wh_2_rect, get_axis_aligned_bbox, load_dataset, poly_iou
 
 
 def parse_args():
@@ -133,6 +143,8 @@ def main():
     info.epoch_test = True
     info.cls_type = 'thinner'
 
+    args.resume = os.path.join('<folder_path>', args.resume)
+
     if 'FC' in args.arch:
         net = models.__dict__[args.arch]()
         tracker = SiamFC(info)
@@ -144,7 +156,7 @@ def main():
 
     net = load_pretrain(net, args.resume)
     net.eval()
-    net = net.cuda()
+    # net = net.cuda()
 
     # check init box is list or not
     if not isinstance(args.init_bbox, list) and args.init_bbox is not None:
@@ -156,3 +168,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# python siamese_tracking/run_video.py --arch SiamFCRes22 --resume snapshots/CIResNet22.pth --video /home/elena/yarun/SiamDW/lib/dataset/video.mp4

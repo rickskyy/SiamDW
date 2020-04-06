@@ -10,7 +10,7 @@ import numpy as np
 
 from torch.autograd import Variable
 import torch.nn.functional as F
-from utils.utils import load_yaml, get_subwindow_tracking, python2round, generate_anchor
+from lib.utils.utils import load_yaml, get_subwindow_tracking, python2round, generate_anchor
 
 
 class SiamRPN(object):
@@ -70,7 +70,7 @@ class SiamRPN(object):
         z_crop = get_subwindow_tracking(im, target_pos, p.exemplar_size, s_z, avg_chans)
 
         z = Variable(z_crop.unsqueeze(0))
-        net.template(z.cuda())
+        net.template(z.cpu())
 
         if p.windowing == 'cosine':
             window = np.outer(np.hanning(p.score_size), np.hanning(p.score_size))  # [17,17]
